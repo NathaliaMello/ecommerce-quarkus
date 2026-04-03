@@ -3,10 +3,10 @@ package com.mello.nathalia.user.resource;
 import com.mello.nathalia.user.domain.User;
 import com.mello.nathalia.user.repository.UserRepository;
 import jakarta.inject.Inject;
-import jakarta.persistence.PersistenceException;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
+import org.hibernate.exception.ConstraintViolationException;
 
 import java.util.List;
 
@@ -41,11 +41,15 @@ public class UserResource {
         try {
             userRepository.persist(user);
             return Response.status(Response.Status.CREATED)
-                    .entity(user).build();
-
-        } catch (PersistenceException e) {
-            return Response.status(Response.Status.CONFLICT)
-                    .entity("email já cadastrado").build();
+                    .entity(user)
+                    .build();
+        } catch (ConstraintViolationException e) {
+            if ("uq_users_email".equals(e.getConstraintName())) {
+                return Response.status(Response.Status.CONFLICT)
+                        .entity(new ErrorResponse("EMAIL_ALREADY_EXISTS", "Email já cadastrado"))
+                        .build();
+            }
+            throw e;
         }
     }
 

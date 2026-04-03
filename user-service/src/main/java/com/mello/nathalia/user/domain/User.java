@@ -5,16 +5,22 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "users", indexes = {
-        @Index(name = "idx_users_email", columnList = "email")
-})
+@Table(
+        name = "users",
+        uniqueConstraints = {
+                @UniqueConstraint(name = "uq_users_email", columnNames = "email")
+        },
+        indexes = {
+                @Index(name = "idx_users_email", columnList = "email")
+        }
+)
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     public String email;
 
     @Column(nullable = false)
@@ -30,5 +36,4 @@ public class User {
     public void prePersist() {
         this.createdAt = LocalDateTime.now();
     }
-
 }
