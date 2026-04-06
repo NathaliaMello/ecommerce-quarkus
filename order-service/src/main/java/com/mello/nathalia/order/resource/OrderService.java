@@ -13,6 +13,8 @@ import org.eclipse.microprofile.faulttolerance.Fallback;
 import org.eclipse.microprofile.faulttolerance.Timeout;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
+import java.util.Optional;
+
 @ApplicationScoped
 public class OrderService {
     private final OrderRepository orderRepository;
@@ -36,7 +38,16 @@ public class OrderService {
             skipOn = {WebApplicationException.class}
     )
     @Transactional
-    public Order create(Order order) {
+    public Order create(Order order, String idempotencyKey) {
+
+        if (idempotencyKey != null) {
+            Optional<Order> existing = orderRepository.findByIdempotencyKey(idempotencyKey);
+            if (existing.isPresent()) {
+                return existing.get();
+            }
+            order.idempotencyKey = idempotencyKey;
+        }
+
         UserResponse user = userClient.findById(order.userId);
 
         if (!user.active()) {
@@ -51,7 +62,7 @@ public class OrderService {
         return order;
     }
 
-    public Order createFallback(Order order) {
+    public Order createFallback(Order order, String idempotencyKey) {
         throw new WebApplicationException(
                 jakarta.ws.rs.core.Response.status(503)
                         .entity(new ErrorResponse(

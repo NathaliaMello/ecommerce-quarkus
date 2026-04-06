@@ -35,9 +35,10 @@ public class OrderResource {
     }
 
     @POST
-    public Response create(Order order) {
+    public Response create(Order order,
+                           @HeaderParam("Idempotency-Key") String idempotencyKey) {
         try {
-            Order created = orderService.create(order);
+            Order created = orderService.create(order, idempotencyKey);
             return Response.status(Response.Status.CREATED)
                     .entity(created)
                     .build();

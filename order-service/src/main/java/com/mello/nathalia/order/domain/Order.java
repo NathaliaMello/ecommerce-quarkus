@@ -26,6 +26,9 @@ public class Order {
     @Column(name = "created_at", nullable = false, updatable = false)
     public LocalDateTime createdAt;
 
+    @Column(name = "idempotency_key", unique = true)
+    public String idempotencyKey;
+
     @PrePersist
     public void prePersist() {
         this.createdAt = LocalDateTime.now();
