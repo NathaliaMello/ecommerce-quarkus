@@ -3,6 +3,7 @@ package com.mello.nathalia.order.resource;
 import com.mello.nathalia.order.client.UserClient;
 import com.mello.nathalia.order.client.UserResponse;
 import com.mello.nathalia.order.domain.Order;
+import com.mello.nathalia.order.domain.OrderCreatedEvent;
 import com.mello.nathalia.order.repository.OrderRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -13,12 +14,20 @@ import org.eclipse.microprofile.faulttolerance.Fallback;
 import org.eclipse.microprofile.faulttolerance.Timeout;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
+import io.smallrye.reactive.messaging.MutinyEmitter;
+import org.eclipse.microprofile.reactive.messaging.Channel;
+
 import java.util.Optional;
 
 @ApplicationScoped
 public class OrderService {
+
+    private static final org.jboss.logging.Logger Log = org.jboss.logging.Logger.getLogger(OrderService.class);
     private final OrderRepository orderRepository;
     private final UserClient userClient;
+
+    @Channel("order-created")
+    MutinyEmitter<OrderCreatedEvent> orderCreatedEmitter;
 
     @Inject
     public OrderService(OrderRepository orderRepository, @RestClient UserClient userClient) {
@@ -59,6 +68,17 @@ public class OrderService {
         }
 
         orderRepository.persist(order);
+
+        orderCreatedEmitter.send(new OrderCreatedEvent(
+                order.id,
+                order.userId,
+                order.total.doubleValue(),
+                order.status.name()
+        )).subscribe().with(
+                success -> Log.infof("Evento order.created publicado para pedido #%d", order.id),
+                failure -> Log.errorf(failure, "Falha ao publicar evento order.created para pedido #%d", order.id)
+        );
+
         return order;
     }
 
