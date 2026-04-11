@@ -34,6 +34,27 @@ Toda a infraestrutura Docker roda em servidor dedicado na rede local.
 | Kafka | 9092 |
 | Kafka UI | 8090 |
 
+Os arquivos Docker estão em `infra/`.
+
+**Subindo tudo localmente:**
+```powershell
+cd infra
+docker-compose up -d
+```
+
+**Subindo em servidor remoto:**
+```powershell
+cd infra
+$env:KAFKA_HOST="192.168.68.110"
+docker-compose up -d
+```
+
+**Subindo só o Kafka (desenvolvimento rápido):**
+```powershell
+cd infra
+docker-compose -f docker-compose.local.yml up -d
+```
+
 ## Como rodar localmente
 
 ### Pré-requisitos

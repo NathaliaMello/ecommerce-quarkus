@@ -3,7 +3,7 @@ version: '3.8'
 services:
   kafka:
     image: confluentinc/cp-kafka:7.6.0
-    container_name: kafka
+    container_name: kafka-local
     ports:
       - "9092:9092"
     environment:
@@ -20,4 +20,3 @@ services:
 
 volumes:
   kafka_data:
-    driver: local
