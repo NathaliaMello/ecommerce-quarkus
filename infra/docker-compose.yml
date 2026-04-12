@@ -89,9 +89,22 @@ services:
     depends_on:
       - prometheus
 
+  keycloak-ecommerce:
+    image: quay.io/keycloak/keycloak:24.0.1
+    container_name: keycloak-ecommerce
+    command: start-dev
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    ports:
+      - "8280:8080"
+    volumes:
+      - keycloak_ecommerce_data:/opt/keycloak/data
+
 volumes:
   postgres_user_data:
   postgres_order_data:
   kafka_data:
   prometheus_data:
   grafana_data:
+  keycloak_ecommerce_data:
