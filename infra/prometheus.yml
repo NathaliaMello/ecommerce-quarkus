@@ -1,23 +1,32 @@
 global:
   scrape_interval: 15s
+  evaluation_interval: 15s
 
 scrape_configs:
-  - job_name: 'user-service'
+  - job_name: 'prometheus'
     static_configs:
-      - targets: ['host.docker.internal:8081']
-    metrics_path: '/q/metrics'
-
-  - job_name: 'order-service'
-    static_configs:
-      - targets: ['host.docker.internal:8082']
-    metrics_path: '/q/metrics'
+      - targets: ['localhost:9090']
 
   - job_name: 'api-gateway'
-    static_configs:
-      - targets: ['host.docker.internal:8080']
+    scrape_interval: 15s
     metrics_path: '/q/metrics'
+    static_configs:
+      - targets: ['192.168.68.110:8080']
+
+  - job_name: 'user-service'
+    scrape_interval: 15s
+    metrics_path: '/q/metrics'
+    static_configs:
+      - targets: ['192.168.68.110:8081']
+
+  - job_name: 'order-service'
+    scrape_interval: 15s
+    metrics_path: '/q/metrics'
+    static_configs:
+      - targets: ['192.168.68.110:8082']
 
   - job_name: 'notification-service'
-    static_configs:
-      - targets: ['host.docker.internal:8083']
+    scrape_interval: 15s
     metrics_path: '/q/metrics'
+    static_configs:
+      - targets: ['192.168.68.110:8083']
