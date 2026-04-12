@@ -1,0 +1,16 @@
+# IntelliJ
+.idea/
+*.iml
+
+# VS Code
+.vscode/
+
+# Maven
+target/
+
+# Quarkus
+.quarkus/
+
+# OS
+.DS_Store
+Thumbs.db
