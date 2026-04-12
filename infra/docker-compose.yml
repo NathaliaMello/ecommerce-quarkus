@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   postgres-user:
@@ -55,7 +55,7 @@ services:
     depends_on:
       - kafka
 
-jaeger:
+  jaeger:
     image: jaegertracing/all-in-one:1.57
     container_name: jaeger
     ports:
