@@ -1,6 +1,7 @@
 package com.mello.nathalia.gateway.resource;
 
 import com.mello.nathalia.gateway.client.UserServiceClient;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -17,23 +18,27 @@ public class UserGatewayResource {
     UserServiceClient userServiceClient;
 
     @GET
+    @RolesAllowed({"admin", "user"})
     public Response getAll() {
         return userServiceClient.getAll();
     }
 
     @GET
     @Path("/{id}")
+    @RolesAllowed({"admin", "user"})
     public Response getById(@PathParam("id") Long id) {
         return userServiceClient.getById(id);
     }
 
     @POST
+    @RolesAllowed("admin")
     public Response create(String body) {
         return userServiceClient.create(body);
     }
 
     @DELETE
     @Path("/{id}")
+    @RolesAllowed("admin")
     public Response delete(@PathParam("id") Long id) {
         return userServiceClient.delete(id);
     }

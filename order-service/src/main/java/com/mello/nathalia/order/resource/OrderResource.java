@@ -2,6 +2,7 @@ package com.mello.nathalia.order.resource;
 
 import com.mello.nathalia.order.domain.Order;
 import com.mello.nathalia.order.repository.OrderRepository;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -24,17 +25,20 @@ public class OrderResource {
     }
 
     @GET
+    @RolesAllowed({"admin", "user"})
     public List<Order> getAll() {
         return orderRepository.listAll();
     }
 
     @GET
     @Path("/user/{userId}")
+    @RolesAllowed({"admin", "user"})
     public List<Order> getByUserId(@PathParam("userId") Long userId) {
         return orderRepository.findByUserId(userId);
     }
 
     @POST
+    @RolesAllowed({"admin", "user"})
     public Response create(Order order,
                            @HeaderParam("Idempotency-Key") String idempotencyKey) {
         try {

@@ -2,6 +2,7 @@ package com.mello.nathalia.user.resource;
 
 import com.mello.nathalia.user.domain.User;
 import com.mello.nathalia.user.repository.UserRepository;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
@@ -23,12 +24,14 @@ public class UserResource {
     }
 
     @GET
+    @RolesAllowed({"admin", "user"})
     public List<User> getAll() {
         return userRepository.listAll();
     }
 
     @GET
     @Path("/{id}")
+    @RolesAllowed({"admin", "user"})
     public Response getById(@PathParam("id") Long id) {
         return userRepository.findByIdOptional(id)
                 .map(user -> Response.ok(user).build())
@@ -37,6 +40,7 @@ public class UserResource {
 
     @POST
     @Transactional
+    @RolesAllowed("admin")
     public Response create(User user) {
         try {
             userRepository.persist(user);
@@ -56,6 +60,7 @@ public class UserResource {
     @DELETE
     @Path("/{id}")
     @Transactional
+    @RolesAllowed("admin")
     public Response delete(@PathParam("id") Long id) {
         return userRepository.findByIdOptional(id)
                 .map(user -> {

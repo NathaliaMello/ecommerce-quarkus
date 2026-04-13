@@ -1,6 +1,7 @@
 package com.mello.nathalia.gateway.resource;
 
 import com.mello.nathalia.gateway.client.OrderServiceClient;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -17,19 +18,22 @@ public class OrderGatewayResource {
     OrderServiceClient orderServiceClient;
 
     @GET
+    @RolesAllowed({"admin", "user"})
     public Response getAll() {
         return orderServiceClient.getAll();
     }
 
     @GET
     @Path("/user/{userId}")
+    @RolesAllowed({"admin", "user"})
     public Response getByUserId(@PathParam("userId") Long userId) {
         return orderServiceClient.getByUserId(userId);
     }
 
     @POST
+    @RolesAllowed("admin")
     public Response create(String body,
-                            @HeaderParam("Idempotency-Key") String idempotencyKey) {
+                           @HeaderParam("Idempotency-Key") String idempotencyKey) {
         if (idempotencyKey == null || idempotencyKey.isBlank()) {
             return Response.status(400)
                     .entity("{\"code\":\"MISSING_IDEMPOTENCY_KEY\",\"message\":\"Header Idempotency-Key é obrigatório\"}")
