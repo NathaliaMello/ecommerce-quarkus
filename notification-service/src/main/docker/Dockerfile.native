@@ -1,5 +1,5 @@
 ####
-# This Dockerfile is used in order to build a container that runs the Quarkus application in native (no JVM) mode.
+# This Dockerfile_old.jvm.optimized is used in order to build a container that runs the Quarkus application in native (no JVM) mode.
 #
 # Before building the container image run:
 #
@@ -7,7 +7,7 @@
 #
 # Then, build the image with:
 #
-# docker build -f src/main/docker/Dockerfile.native -t quarkus/notification-service .
+# docker build -f src/main/docker/Dockerfile_old.jvm.optimized.native -t quarkus/notification-service .
 #
 # Then run the container using:
 #

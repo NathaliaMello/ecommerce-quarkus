@@ -1,0 +1,122 @@
+####################################################################################################
+# DOCKERFILE OTIMIZADO — api-gateway
+# Modo: JVM Fast-JAR (padrão Quarkus para alta throughput com longa vida útil)
+#
+# DIFERENÇA para o Dockerfile.jvm padrão gerado pelo Quarkus:
+#   ✗ Padrão:    copia arquivos sem estratégia de cache, usa imagem base mais pesada
+#   ✓ Otimizado: multi-stage build, layer caching correto, healthcheck, usuário não-root
+####################################################################################################
+
+
+# =============================================================================
+# STAGE 1: BUILD
+# Responsabilidade: compilar o projeto e gerar o Fast-JAR
+#
+# Por que stage separado?
+#   A imagem com Maven + JDK pesa ~600MB. Nós não queremos isso em produção.
+#   O Docker descarta esse stage ao final — sua imagem final não carrega nada disso.
+# =============================================================================
+FROM eclipse-temurin:17-jdk-alpine AS builder
+
+WORKDIR /build
+
+# ── Passo 1: copiar APENAS o pom.xml primeiro ──────────────────────────────
+# Por quê? O Docker cria uma camada (layer) por instrução COPY/RUN.
+# Se copiamos o pom.xml separadamente e rodamos o download de dependências,
+# essa camada fica em CACHE. Na próxima build, se o pom.xml não mudou,
+# o Docker reutiliza o cache e pula o download (~2-3 minutos economizados).
+COPY pom.xml .
+
+# ── Passo 2: baixar todas as dependências offline ───────────────────────────
+# 'dependency:go-offline' força o Maven a baixar tudo que precisará depois.
+# Essa camada só é reexecutada quando o pom.xml muda.
+RUN mvn dependency:go-offline -q
+
+# ── Passo 3: copiar o código-fonte ──────────────────────────────────────────
+# Só agora copiamos src/. Código muda com frequência, então fica em camada separada
+# da de dependências. Dependências são estáveis → cache duradouro.
+COPY src ./src
+
+# ── Passo 4: compilar e gerar o Fast-JAR ────────────────────────────────────
+# Fast-JAR é o formato padrão do Quarkus. Diferente de über-jar (tudo num arquivo só),
+# o Fast-JAR separa as dependências em /lib — o classloader inicia muito mais rápido
+# porque não precisa desempacotar um único JAR gigante.
+RUN mvn package -DskipTests -q
+
+
+# =============================================================================
+# STAGE 2: RUNTIME
+# Responsabilidade: executar a aplicação com a menor imagem possível
+#
+# ubi8/ubi-minimal: Red Hat Universal Base Image (minimal)
+#   - Imagem oficial recomendada pelo Quarkus
+#   - Apenas o essencial para rodar Java: sem compiladores, sem package managers
+#   - Menor superfície de ataque (menos binários = menos vulnerabilidades)
+# =============================================================================
+FROM registry.access.redhat.com/ubi8/ubi-minimal:8.9
+
+WORKDIR /deployments
+
+# ── Segurança: usuário não-root ──────────────────────────────────────────────
+# Por padrão, containers rodam como root. Isso é um risco: se alguém explorar
+# uma vulnerabilidade na sua app, ele tem acesso root ao container.
+# Boa prática: criar um usuário dedicado com permissões mínimas.
+RUN microdnf install -y java-17-openjdk-headless && \
+    microdnf clean all && \
+    useradd -r -u 1001 -g root javauser
+
+# ── Copiar apenas o resultado do build (não o JDK, não o Maven) ─────────────
+# O Quarkus Fast-JAR gera essa estrutura em target/quarkus-app/:
+#   quarkus-run.jar  → entry point (pequeno, só referencia as libs)
+#   lib/             → todas as dependências (não mudam a cada deploy)
+#   app/             → suas classes compiladas (muda a cada deploy)
+#   quarkus/         → framework interno
+#
+# Copiamos lib/ e app/ em instruções separadas para aproveitar cache:
+#   lib/ raramente muda → camada de cache longa
+#   app/ muda a cada commit → camada sempre nova
+COPY --from=builder --chown=javauser:root /build/target/quarkus-app/lib/ ./lib/
+COPY --from=builder --chown=javauser:root /build/target/quarkus-app/quarkus/ ./quarkus/
+COPY --from=builder --chown=javauser:root /build/target/quarkus-app/app/ ./app/
+COPY --from=builder --chown=javauser:root /build/target/quarkus-app/quarkus-run.jar ./quarkus-run.jar
+
+# ── Metadados da imagem (labels) ─────────────────────────────────────────────
+# Labels são metadados que ficam gravados na imagem. Úteis para rastreabilidade:
+# você pode ver em qual commit essa imagem foi gerada, qual serviço é, etc.
+LABEL org.opencontainers.image.title="api-gateway" \
+      org.opencontainers.image.description="API Gateway - ecommerce-quarkus" \
+      org.opencontainers.image.version="1.0.0"
+
+# ── Expor a porta ────────────────────────────────────────────────────────────
+# EXPOSE é documentação — não abre a porta por si só.
+# A porta real é mapeada no docker-compose ou no kubectl.
+EXPOSE 8080
+
+# ── Health Check ─────────────────────────────────────────────────────────────
+# "Container rodando" ≠ "aplicação saudável".
+# O HEALTHCHECK instrui o Docker a verificar periodicamente se a app está OK.
+# O Quarkus expõe /q/health via SmallRye Health extension.
+#
+# --interval=30s  → checa a cada 30 segundos
+# --timeout=10s   → se não responder em 10s, considera falha
+# --start-period=60s → aguarda 60s após o start antes de começar a checar
+#                      (tempo para a JVM inicializar completamente)
+# --retries=3     → após 3 falhas consecutivas, marca como "unhealthy"
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD curl -f http://localhost:8080/q/health/live || exit 1
+
+# ── Executar como usuário não-root ───────────────────────────────────────────
+USER javauser
+
+# ── Comando de inicialização ─────────────────────────────────────────────────
+# Flags JVM escolhidas para containers:
+#   -XX:+UseContainerSupport    → faz a JVM ler os limits de CPU/memória do cgroup
+#                                 (sem isso, a JVM usa os recursos do HOST, não do container)
+#   -XX:MaxRAMPercentage=75.0   → usa no máximo 75% da RAM do container para heap
+#                                 (deixa 25% para o sistema operacional e threads)
+#   -Djava.util.logging...      → logging adequado para containers (sem ANSI colors)
+ENTRYPOINT ["java", \
+    "-XX:+UseContainerSupport", \
+    "-XX:MaxRAMPercentage=75.0", \
+    "-Djava.util.logging.manager=org.jboss.logmanager.LogManager", \
+    "-jar", "/deployments/quarkus-run.jar"]
