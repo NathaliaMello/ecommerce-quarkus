@@ -93,7 +93,7 @@ Acessa `http://localhost:8080/q/swagger-ui` para explorar os endpoints via Gatew
 - [x] Fase 1 — Fundação Quarkus: user-service com CRUD, JPA, tratamento de erros
 - [x] Fase 2 — Arquitetura de microserviços: order-service, API Gateway, Circuit Breaker e idempotência
 - [x] Fase 3 — Mensageria assíncrona: Kafka, eventos e notification-service
-- [ ] Fase 4 — Observabilidade (OpenTelemetry, Jaeger, Grafana)
-- [ ] Fase 5 — Segurança (Keycloak, JWT, RBAC)
+- [x] Fase 4 — Observabilidade (OpenTelemetry, Jaeger, Grafana)
+- [x] Fase 5 — Segurança (Keycloak, JWT, RBAC)
 - [ ] Fase 6 — DevOps (Docker otimizado, Kubernetes, CI/CD)
 - [ ] Frontend Web (Next.js)

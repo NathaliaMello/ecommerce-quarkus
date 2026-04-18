@@ -1,4 +1,4 @@
-package com.mello.nathalia.user.domain;
+package com.mello.nathalia.user.domain.model;
 
 import jakarta.persistence.*;
 

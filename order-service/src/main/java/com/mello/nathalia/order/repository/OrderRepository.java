@@ -1,6 +1,6 @@
 package com.mello.nathalia.order.repository;
 
-import com.mello.nathalia.order.domain.Order;
+import com.mello.nathalia.order.domain.model.Order;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 

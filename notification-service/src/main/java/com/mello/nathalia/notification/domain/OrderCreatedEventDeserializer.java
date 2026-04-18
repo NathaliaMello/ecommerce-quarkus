@@ -1,4 +1,4 @@
-package com.mello.nathalia.notification.consumer;
+package com.mello.nathalia.notification.domain;
 
 import io.quarkus.kafka.client.serialization.ObjectMapperDeserializer;
 

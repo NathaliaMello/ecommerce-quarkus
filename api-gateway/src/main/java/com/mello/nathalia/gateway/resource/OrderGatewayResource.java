@@ -1,6 +1,7 @@
 package com.mello.nathalia.gateway.resource;
 
 import com.mello.nathalia.gateway.client.OrderServiceClient;
+import com.mello.nathalia.gateway.common.response.ErrorResponse;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
@@ -36,7 +37,9 @@ public class OrderGatewayResource {
                            @HeaderParam("Idempotency-Key") String idempotencyKey) {
         if (idempotencyKey == null || idempotencyKey.isBlank()) {
             return Response.status(400)
-                    .entity("{\"code\":\"MISSING_IDEMPOTENCY_KEY\",\"message\":\"Header Idempotency-Key é obrigatório\"}")
+                    .entity(new ErrorResponse(
+                            "MISSING_IDEMPOTENCY_KEY",
+                            "Header Idempotency-Key é obrigatório"))
                     .build();
         }
         return orderServiceClient.create(body, idempotencyKey);

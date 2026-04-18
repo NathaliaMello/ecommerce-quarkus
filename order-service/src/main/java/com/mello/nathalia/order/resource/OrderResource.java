@@ -1,6 +1,8 @@
 package com.mello.nathalia.order.resource;
 
-import com.mello.nathalia.order.domain.Order;
+import com.mello.nathalia.order.common.response.ErrorResponse;
+import com.mello.nathalia.order.domain.model.Order;
+import com.mello.nathalia.order.domain.service.OrderService;
 import com.mello.nathalia.order.repository.OrderRepository;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
