@@ -1,5 +1,6 @@
 package com.mello.nathalia.notification.consumer;
 
+import com.mello.nathalia.notification.domain.OrderCreatedEvent;
 import io.smallrye.reactive.messaging.annotations.Blocking;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
@@ -20,7 +21,5 @@ public class OrderNotificationConsumer {
 
         LOG.infof("Notificação processada com sucesso para pedido #%d", event.orderId());
     }
-
-
 
 }

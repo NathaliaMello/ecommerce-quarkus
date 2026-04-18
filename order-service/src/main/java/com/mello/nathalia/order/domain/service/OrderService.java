@@ -1,9 +1,10 @@
-package com.mello.nathalia.order.resource;
+package com.mello.nathalia.order.domain.service;
 
 import com.mello.nathalia.order.client.UserClient;
 import com.mello.nathalia.order.client.UserResponse;
-import com.mello.nathalia.order.domain.Order;
-import com.mello.nathalia.order.domain.OrderCreatedEvent;
+import com.mello.nathalia.order.common.response.ErrorResponse;
+import com.mello.nathalia.order.domain.model.Order;
+import com.mello.nathalia.order.domain.model.OrderCreatedEvent;
 import com.mello.nathalia.order.repository.OrderRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;

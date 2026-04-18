@@ -1,6 +1,6 @@
-package com.mello.nathalia.order.domain;
+package com.mello.nathalia.notification.domain;
 
-public record OrderCreatedEvent (
+public record OrderCreatedEvent(
         Long orderId,
         Long userId,
         Double total,

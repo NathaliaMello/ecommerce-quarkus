@@ -1,6 +1,6 @@
 package com.mello.nathalia.user.repository;
 
-import com.mello.nathalia.user.domain.User;
+import com.mello.nathalia.user.domain.model.User;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 

@@ -1,13 +1,11 @@
 package com.mello.nathalia.user.resource;
 
-import com.mello.nathalia.user.domain.User;
-import com.mello.nathalia.user.repository.UserRepository;
+import com.mello.nathalia.user.domain.model.User;
+import com.mello.nathalia.user.domain.service.UserService;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
-import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
-import org.hibernate.exception.ConstraintViolationException;
 
 import java.util.List;
 
@@ -16,58 +14,43 @@ import java.util.List;
 @Consumes("application/json")
 public class UserResource {
 
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     @Inject
-    public UserResource(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public UserResource(UserService userService) {
+        this.userService = userService;
     }
 
     @GET
     @RolesAllowed({"admin", "user"})
     public List<User> getAll() {
-        return userRepository.listAll();
+        return userService.findAll();
     }
 
     @GET
     @Path("/{id}")
     @RolesAllowed({"admin", "user"})
     public Response getById(@PathParam("id") Long id) {
-        return userRepository.findByIdOptional(id)
-                .map(user -> Response.ok(user).build())
-                .orElse(Response.status(Response.Status.NOT_FOUND).build());
+        return Response.ok(userService.findById(id)).build();
     }
 
     @POST
-    @Transactional
     @RolesAllowed("admin")
     public Response create(User user) {
-        try {
-            userRepository.persist(user);
-            return Response.status(Response.Status.CREATED)
-                    .entity(user)
-                    .build();
-        } catch (ConstraintViolationException e) {
-            if ("uq_users_email".equals(e.getConstraintName())) {
-                return Response.status(Response.Status.CONFLICT)
-                        .entity(new ErrorResponse("EMAIL_ALREADY_EXISTS", "Email já cadastrado"))
-                        .build();
-            }
-            throw e;
-        }
+        User created = userService.create(user);
+        return Response.status(Response.Status.CREATED)
+                .entity(created)
+                .build();
     }
 
     @DELETE
     @Path("/{id}")
-    @Transactional
     @RolesAllowed("admin")
     public Response delete(@PathParam("id") Long id) {
-        return userRepository.findByIdOptional(id)
-                .map(user -> {
-                    userRepository.delete(user);
-                    return Response.noContent().<Response>build();
-                })
-                .orElse(Response.status(Response.Status.NOT_FOUND).build());
+        boolean deleted = userService.delete(id);
+        return deleted
+                ? Response.noContent().build()
+                : Response.status(Response.Status.NOT_FOUND).build();
     }
 
 }
