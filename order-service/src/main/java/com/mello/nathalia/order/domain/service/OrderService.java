@@ -3,6 +3,7 @@ package com.mello.nathalia.order.domain.service;
 import com.mello.nathalia.order.client.UserClient;
 import com.mello.nathalia.order.client.UserResponse;
 import com.mello.nathalia.order.common.response.ErrorResponse;
+import com.mello.nathalia.order.common.response.OrderSummaryResponse;
 import com.mello.nathalia.order.domain.model.Order;
 import com.mello.nathalia.order.domain.model.OrderCreatedEvent;
 import com.mello.nathalia.order.repository.OrderRepository;
@@ -18,6 +19,8 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 import io.smallrye.reactive.messaging.MutinyEmitter;
 import org.eclipse.microprofile.reactive.messaging.Channel;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @ApplicationScoped
@@ -92,5 +95,20 @@ public class OrderService {
                         ))
                         .build()
         );
+    }
+
+    public OrderSummaryResponse getSummaryByUserId(Long userId) {
+        List<Order> orders = orderRepository.findByUserId(userId);
+
+        if (orders.isEmpty()) {
+            return new OrderSummaryResponse(userId, 0, null);
+        }
+
+        LocalDateTime firstOrderDate = orders.stream()
+                .map(o -> o.createdAt)
+                .min(LocalDateTime::compareTo)
+                .orElse(null);
+
+        return new OrderSummaryResponse(userId, orders.size(), firstOrderDate);
     }
 }

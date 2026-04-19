@@ -89,6 +89,16 @@
             <version>3.25.3</version>
             <scope>test</scope>
         </dependency>
+
+        <!-- Client Credentials para chamadas internas autenticadas -->
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-oidc-client</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-rest-client-oidc-filter</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

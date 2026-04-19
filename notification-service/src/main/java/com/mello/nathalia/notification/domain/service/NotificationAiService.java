@@ -22,6 +22,7 @@ public class NotificationAiService {
             Você é um assistente de notificações de um ecommerce brasileiro.
             Gere mensagens curtas, amigáveis e profissionais em português para
             notificar clientes sobre seus pedidos.
+            Use o contexto do cliente para personalizar a mensagem quando disponível.
             Responda APENAS com o texto da notificação, sem explicações adicionais.
             Máximo de 2 frases.
             """;
@@ -35,17 +36,27 @@ public class NotificationAiService {
     @ConfigProperty(name = "groq.model")
     String model;
 
+    private final UserContextService userContextService;
+
     @Inject
-    public NotificationAiService(@RestClient GroqClient groqClient) {
+    public NotificationAiService(
+            @RestClient GroqClient groqClient,
+            UserContextService userContextService) {
         this.groqClient = groqClient;
+        this.userContextService = userContextService;
     }
 
     public String generateNotification(OrderCreatedEvent event) {
+        String userContext = userContextService.buildContext(event.userId());
+
         String userMessage = """
-                Pedido #%d criado com sucesso.
-                Valor total: R$ %.2f
-                Status: %s
-                """.formatted(event.orderId(), event.total(), event.status());
+                Contexto do cliente:
+                %s
+                Pedido criado:
+                - Número: #%d
+                - Valor total: R$ %.2f
+                - Status: %s
+                """.formatted(userContext, event.orderId(), event.total(), event.status());
 
         GroqRequest request = new GroqRequest(
                 model,
