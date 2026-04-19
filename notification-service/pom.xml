@@ -68,6 +68,12 @@
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-oidc</artifactId>
         </dependency>
+
+        <!-- Cliente HTTP para integração com APIs externas (Groq/IA) -->
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-rest-client-jackson</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
