@@ -45,7 +45,7 @@ docker-compose up -d
 **Subindo em servidor remoto:**
 ```powershell
 cd infra
-$env:KAFKA_HOST="192.168.68.110"
+$env:KAFKA_HOST="192.XXX.XX.XXX"
 docker-compose up -d
 ```
 
@@ -95,5 +95,7 @@ Acessa `http://localhost:8080/q/swagger-ui` para explorar os endpoints via Gatew
 - [x] Fase 3 — Mensageria assíncrona: Kafka, eventos e notification-service
 - [x] Fase 4 — Observabilidade (OpenTelemetry, Jaeger, Grafana)
 - [x] Fase 5 — Segurança (Keycloak, JWT, RBAC)
-- [ ] Fase 6 — DevOps (Docker otimizado, Kubernetes, CI/CD)
+- [x] Fase 6 — DevOps Parte 1 (Dockerfile otimizado, .gitignore, proteção de secrets)
+- [x] Fase 7 — IA Generativa (Groq, Llama 3, geração dinâmica de notificações)
+- [ ] Fase 8 — DevOps Parte 2 (Kubernetes, CI/CD)
 - [ ] Frontend Web (Next.js)
