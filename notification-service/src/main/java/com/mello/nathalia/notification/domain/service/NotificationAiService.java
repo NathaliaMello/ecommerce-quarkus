@@ -60,6 +60,12 @@ public class NotificationAiService {
         try {
             GroqResponse response = groqClient.chat("Bearer " + apiKey, request);
             String notification = response.firstContent();
+
+            if (notification == null || notification.isBlank()) {
+                LOG.warnf("Resposta vazia da IA para pedido #%d, usando fallback", event.orderId());
+                return fallbackNotification(event);
+            }
+
             LOG.infof("Notificação gerada pela IA para pedido #%d: %s",
                     event.orderId(), notification);
             return notification;
