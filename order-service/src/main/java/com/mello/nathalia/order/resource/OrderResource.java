@@ -58,4 +58,11 @@ public class OrderResource {
             return e.getResponse();
         }
     }
+
+    @GET
+    @Path("/user/{userId}/summary")
+    @RolesAllowed({"admin", "user"})
+    public Response getSummaryByUserId(@PathParam("userId") Long userId) {
+        return Response.ok(orderService.getSummaryByUserId(userId)).build();
+    }
 }
