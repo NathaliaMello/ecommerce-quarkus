@@ -1,0 +1,21 @@
+{
+  "name": "orders-data-access",
+  "$schema": "../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "orders-data-access/src",
+  "prefix": "lib",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "orders-data-access/jest.config.cts",
+        "tsConfig": "orders-data-access/tsconfig.spec.json"
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    }
+  }
+}
