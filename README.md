@@ -100,5 +100,5 @@ Acessa `http://localhost:8080/q/swagger-ui` para explorar os endpoints via Gatew
 - [ ] Fase 8 — DevOps Parte 2 (Kubernetes, CI/CD)
 - [x] Fase 9A - Frontend (Angular 19)
 - [x] Fase 9B - Frontend (Native Federation - Arquitetura MFE)
-- [x] Fase 9C - Frntend (Keycloak + OIDC no Shell)
+- [x] Fase 9C - Frontend (Keycloak + OIDC no Shell)
 - [ ] Fase 10 - Testes (Karma/ Jest + Cypress)
