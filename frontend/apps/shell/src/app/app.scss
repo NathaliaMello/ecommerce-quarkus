@@ -1,0 +1,44 @@
+nav {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    padding: 12px 24px;
+    background: #1a1a2e;
+
+    a {
+        color: #fff;
+        text-decoration: none;
+        padding: 6px 12px;
+        border-radius: 4px;
+
+        &:active {
+            background: #e94560;
+        }
+    }
+
+    .auth-actions {
+        margin-left: auto;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color:#fff;
+
+        button {
+            padding: 6px 16px;
+            border: 1px solid #fff;
+            border-radius: 4px;
+            background: transparent;
+            color: #fff;
+            cursor: pointer;
+
+            &:hover {
+                background: #e94560;
+                border-color: #e94560;
+            }
+        }
+    }
+}
+
+main {
+    padding: 24px;
+}

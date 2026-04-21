@@ -15,14 +15,14 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@frontend/shared-auth": ["shared-auth/src/index.ts"],
-      "@frontend/shared-ui": ["shared-ui/src/index.ts"],
-      "@frontend/shared-models": ["shared-models/src/index.ts"],
-      "@frontend/users-data-access": ["users-data-access/src/index.ts"],
-      "@frontend/orders-data-access": ["orders-data-access/src/index.ts"],
-      "@frontend/notifications-data-access": [
+      "@ecommerce/shared-auth": ["shared-auth/src/index.ts"],
+      "@ecommerce/shared-ui": ["shared-ui/src/index.ts"],
+      "@ecommerce/shared-models": ["shared-models/src/index.ts"],
+      "@ecommerce/users-data-access": ["users-data-access/src/index.ts"],
+      "@ecommerce/orders-data-access": ["orders-data-access/src/index.ts"],
+      "@ecommerce/notifications-data-access": [
         "notifications-data-access/src/index.ts"
-      ]
+      ],
     }
   },
   "exclude": ["node_modules", "tmp"]
