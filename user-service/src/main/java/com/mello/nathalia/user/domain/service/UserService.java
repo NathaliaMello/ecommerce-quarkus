@@ -63,4 +63,14 @@ public class UserService {
                                 .build()
                 ));
     }
+
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new WebApplicationException(
+                        Response.status(Response.Status.NOT_FOUND)
+                                .entity(new ErrorResponse("USER_NOT_FOUND", "Usuário não encontrado"))
+                                .build()
+                ));
+    }
+
 }

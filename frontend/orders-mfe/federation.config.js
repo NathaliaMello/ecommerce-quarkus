@@ -3,16 +3,15 @@ const { withNativeFederation, shareAll } = require('@angular-architects/native-f
 module.exports = withNativeFederation({
   name: 'orders-mfe',
 
-
-
   exposes: {
     './Component': './orders-mfe/src/app/app.ts',
+    './Routes': './orders-mfe/src/app/app.routes.ts',
   },
 
   shared: {
     ...shareAll({ singleton: true, strictVersion: true, requiredVersion: 'auto' }),
-    '@ecommerce/shared-auth': { 
-      singleton: true, 
+    '@ecommerce/shared-auth': {
+      singleton: true,
       strictVersion: false,
       eager: true,
       requiredVersion: 'auto'
@@ -25,16 +24,9 @@ module.exports = withNativeFederation({
     'rxjs/testing',
     'rxjs/webSocket',
     'keycloak-js',
-    // Add further packages you don't need at runtime
   ],
 
-  // Please read our FAQ about sharing libs:
-  // https://shorturl.at/jmzH0
-
   features: {
-    // New feature for more performance and avoiding
-    // issues with node libs. Comment this out to
-    // get the traditional behavior:
     ignoreUnusedDeps: true
   }
 });

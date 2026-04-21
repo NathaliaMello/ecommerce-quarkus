@@ -1,0 +1,47 @@
+<div class="container">
+  <div class="header">
+    <h2>Pedidos</h2>
+    <a routerLink="/orders/new" class="btn-primary">+ Novo Pedido</a>
+  </div>
+
+  @if (loading()) {
+    <p class="loading">Carregando...</p>
+  }
+
+  @if (error()) {
+    <p class="error">{{ error() }}</p>
+  }
+
+  @if (!loading() && !error()) {
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          @if (authService.isAdmin()) {
+            <th>User ID</th>
+          }
+          <th>Total</th>
+          <th>Status</th>
+          <th>Criado em</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (order of orders(); track order.id) {
+          <tr>
+            <td>{{ order.id }}</td>
+            @if (authService.isAdmin()) {
+              <td>{{ order.userId }}</td>
+            }
+            <td>{{ order.total | currency:'BRL' }}</td>
+            <td>
+              <span [class]="statusClass(order.status)">
+                {{ formatStatus(order.status) }}
+              </span>
+            </td>
+            <td>{{ formatDate(order.createdAt) }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</div>

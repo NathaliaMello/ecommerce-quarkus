@@ -18,25 +18,23 @@ import java.util.List;
 public class OrderResource {
 
     private final OrderService orderService;
-    private final OrderRepository orderRepository;
 
     @Inject
-    public OrderResource(OrderRepository orderRepository, OrderService orderService) {
-        this.orderRepository = orderRepository;
+    public OrderResource(OrderService orderService) {
         this.orderService = orderService;
     }
 
     @GET
     @RolesAllowed({"admin", "user"})
     public List<Order> getAll() {
-        return orderRepository.listAll();
+        return orderService.getAll();
     }
 
     @GET
     @Path("/user/{userId}")
     @RolesAllowed({"admin", "user"})
     public List<Order> getByUserId(@PathParam("userId") Long userId) {
-        return orderRepository.findByUserId(userId);
+        return orderService.getByUserId(userId);
     }
 
     @POST

@@ -16,4 +16,5 @@ public class UserRepository implements PanacheRepository<User> {
     public boolean existsByEmail(String email) {
         return count("email", email) > 0;
     }
+
 }

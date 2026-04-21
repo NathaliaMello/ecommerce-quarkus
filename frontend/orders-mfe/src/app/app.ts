@@ -1,17 +1,9 @@
 import { Component } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { RouterOutlet } from '@angular/router';
 
 @Component({
-  imports: [RouterModule],
   selector: 'app-orders-mfe',
-  template: `
-    <div>
-      <h2>Pedidos</h2>
-      <p>MFE de pedidos carregado com sucesso!</p>
-      <router-outlet></router-outlet>
-    </div>
-  `,
+  imports: [RouterOutlet],
+  template: `<router-outlet />`,
 })
-export class App {
-  protected title = 'orders-mfe';
-}
+export class App {}

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { UsersService } from '../../services/users.service';
 import { AuthService } from '@ecommerce/shared-auth';
-import { User } from '../../models/user.model';
+import { User } from '@ecommerce/users-data-access';
 
 @Component({
   selector: 'app-user-list',
