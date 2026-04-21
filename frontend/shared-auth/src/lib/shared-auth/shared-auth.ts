@@ -1,4 +1,4 @@
-import { Injectable, signal, computed, inject } from '@angular/core';
+import { Injectable, signal, computed } from '@angular/core';
 import Keycloak from 'keycloak-js';
 
 export interface AuthUser {
@@ -9,14 +9,17 @@ export interface AuthUser {
   lastName?: string;
 }
 
-@Injectable({providedIn: 'root'})
-export class AuthService {
-  private keycloak = new Keycloak({
-    url: 'http://192.168.68.112:8280',
-    realm: 'ecommerce',
-    clientId: 'frontend-shell',
-  });
+// Usa window como storage global — sobrevive a múltiplos bundles
+function getKeycloak(): Keycloak | undefined {
+  return (window as any).__keycloak_instance__;
+}
 
+function setKeycloak(kc: Keycloak): void {
+  (window as any).__keycloak_instance__ = kc;
+}
+
+@Injectable({ providedIn: 'platform' })
+export class AuthService {
   private _isLoggedIn = signal<boolean>(false);
   private _user = signal<AuthUser | null>(null);
   private _roles = signal<string[]>([]);
@@ -28,21 +31,36 @@ export class AuthService {
   readonly token = this._token.asReadonly();
 
   readonly isAdmin = computed(() =>
-    this._roles().includes('admin'));
+    this._roles().includes('admin')
+  );
 
   async init(): Promise<void> {
-    const authenticated = await this.keycloak.init({
+    console.log('AuthService.init() called');
+
+    if (getKeycloak()) {
+      console.log('Keycloak already initialized, skipping');
+      return;
+    }
+
+    const kc = new Keycloak({
+      url: 'http://192.168.68.112:8280',
+      realm: 'ecommerce',
+      clientId: 'frontend-shell',
+    });
+
+    const authenticated = await kc.init({
       onLoad: 'check-sso',
       checkLoginIframe: false,
     });
 
+    setKeycloak(kc);
+    console.log('Keycloak init result:', authenticated);
     this._isLoggedIn.set(authenticated);
 
     if (authenticated) {
-      this._token.set(this.keycloak.token ?? null);
-      this._roles.set(this.keycloak.realmAccess?.roles ?? []);
-
-      const profile = await this.keycloak.loadUserProfile();
+      this._token.set(kc.token ?? null);
+      this._roles.set(kc.realmAccess?.roles ?? []);
+      const profile = await kc.loadUserProfile();
       this._user.set({
         id: profile.id ?? '',
         username: profile.username ?? '',
@@ -54,20 +72,20 @@ export class AuthService {
   }
 
   async login(): Promise<void> {
-    await this.keycloak.login();
+    console.log('login called, keycloak:', getKeycloak());
+    await getKeycloak()?.login();
   }
 
   async logout(): Promise<void> {
-    await this.keycloak.logout();
+    await getKeycloak()?.logout();
   }
 
   async refreshToken(): Promise<void> {
-    await this.keycloak.updateToken(30);
-    this._token.set(this.keycloak.token ?? null);
+    await getKeycloak()?.updateToken(30);
+    this._token.set(getKeycloak()?.token ?? null);
   }
 
   hasRole(role: string): boolean {
     return this._roles().includes(role);
   }
-
 }

@@ -3,9 +3,21 @@ const { withNativeFederation, shareAll } = require('@angular-architects/native-f
 module.exports = withNativeFederation({
   name: 'shell',
 
+  remotes: {
+    'users-mfe': 'http://localhost:4201/remoteEntry.json',
+    'orders-mfe': 'http://localhost:4202/remoteEntry.json',
+    'notifications-mfe': 'http://localhost:4203/remoteEntry.json',
+  },
+
 
   shared: {
     ...shareAll({ singleton: true, strictVersion: true, requiredVersion: 'auto' }),
+    '@ecommerce/shared-auth': { 
+      singleton: true, 
+      strictVersion: false,
+      eager: true,
+      requiredVersion: 'auto'
+    },
   },
 
   skip: [
@@ -13,6 +25,7 @@ module.exports = withNativeFederation({
     'rxjs/fetch',
     'rxjs/testing',
     'rxjs/webSocket',
+     'keycloak-js', 
     // Add further packages you don't need at runtime
   ],
 

@@ -11,6 +11,12 @@ module.exports = withNativeFederation({
 
   shared: {
     ...shareAll({ singleton: true, strictVersion: true, requiredVersion: 'auto' }),
+    '@ecommerce/shared-auth': { 
+      singleton: true, 
+      strictVersion: false,
+      eager: true,
+      requiredVersion: 'auto'
+    },
   },
 
   skip: [
@@ -18,6 +24,7 @@ module.exports = withNativeFederation({
     'rxjs/fetch',
     'rxjs/testing',
     'rxjs/webSocket',
+    'keycloak-js',
     // Add further packages you don't need at runtime
   ],
 

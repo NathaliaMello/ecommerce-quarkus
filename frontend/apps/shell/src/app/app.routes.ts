@@ -1,3 +1,35 @@
+import { loadRemoteModule } from '@angular-architects/native-federation';
 import { Route } from '@angular/router';
 
-export const appRoutes: Route[] = [];
+export const appRoutes: Route[] = [
+    {
+        path: '',
+        redirectTo: 'users',
+        pathMatch: 'full'
+    },
+    {
+        path: 'users',
+        loadComponent: () => 
+            loadRemoteModule('users-mfe', './Component').then(
+                (m) => m.AppComponent
+            ), 
+    },
+    {
+        path: 'orders',
+        loadComponent: () => 
+            loadRemoteModule('orders-mfe', './Component').then(
+                (m) => m.AppComponent
+            ), 
+    },
+    {
+        path: 'notifications',
+        loadComponent: () => 
+            loadRemoteModule('notifications-mfe', './Component').then(
+                (m) => m.AppComponent
+            ), 
+    },
+    {
+        path: '**',
+        redirectTo: 'users'
+    },
+];
