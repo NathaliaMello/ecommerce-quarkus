@@ -11,21 +11,21 @@ export const appRoutes: Route[] = [
         path: 'users',
         loadComponent: () => 
             loadRemoteModule('users-mfe', './Component').then(
-                (m) => m.AppComponent
+                (m) => m.App
             ), 
     },
     {
         path: 'orders',
         loadComponent: () => 
             loadRemoteModule('orders-mfe', './Component').then(
-                (m) => m.AppComponent
+                (m) => m.App
             ), 
     },
     {
         path: 'notifications',
         loadComponent: () => 
             loadRemoteModule('notifications-mfe', './Component').then(
-                (m) => m.AppComponent
+                (m) => m.App
             ), 
     },
     {
