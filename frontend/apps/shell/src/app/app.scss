@@ -4,6 +4,8 @@ nav {
     align-items: center;
     padding: 12px 24px;
     background: #1a1a2e;
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 0.95rem;
 
     a {
         color: #fff;
@@ -11,8 +13,12 @@ nav {
         padding: 6px 12px;
         border-radius: 4px;
 
-        &:active {
+        &.active {
             background: #e94560;
+        }
+
+        &:hover {
+            background: rgba(255, 255, 255, 0.1);
         }
     }
 

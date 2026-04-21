@@ -2,15 +2,18 @@ const { withNativeFederation, shareAll } = require('@angular-architects/native-f
 
 module.exports = withNativeFederation({
   name: 'users-mfe',
-
-
-
   exposes: {
     './Component': './users-mfe/src/app/app.ts',
+    './Routes': './users-mfe/src/app/app.routes.ts',
   },
 
   shared: {
     ...shareAll({ singleton: true, strictVersion: true, requiredVersion: 'auto' }),
+    '@angular/router': {
+      singleton: true,
+      strictVersion: false,
+      requiredVersion: 'auto'
+    },
     '@ecommerce/shared-auth': { 
       singleton: true, 
       strictVersion: false,
@@ -25,6 +28,7 @@ module.exports = withNativeFederation({
     'rxjs/testing',
     'rxjs/webSocket',
     'keycloak-js',
+    '@angular/router/types/_router_module-chunk',
     // Add further packages you don't need at runtime
   ],
 
