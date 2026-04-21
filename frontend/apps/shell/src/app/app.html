@@ -1,0 +1,17 @@
+<nav>
+    <a routerLink="/users" routerLinkActive="active">Usuários</a>
+    <a routerLink="/orders" routerLinkActive="active">Pedidos</a>
+    <a routerLink="/notifications" routerLinkActive="active">Notificações</a>
+
+    <div class="auth-actions">
+        @if (authService.isLoggedIn()) {
+            <span>{{ authService.currentUser()?.username }}</span>
+            <button (click)="authService.logout()">Logout</button>
+        } @else {
+            <button (click)="authService.login()">Login</button>
+        }
+    </div>
+</nav>
+<main>
+    <router-outlet></router-outlet>
+</main>

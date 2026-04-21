@@ -1,0 +1,55 @@
+<div class="container">
+  <div class="header">
+    <h2>Usuários</h2>
+    @if (authService.isAdmin()) {
+      <a routerLink="/users/new" class="btn-primary">+ Novo Usuário</a>
+    }
+  </div>
+
+  @if (loading()) {
+    <p class="loading">Carregando...</p>
+  }
+
+  @if (error()) {
+    <p class="error">{{ error() }}</p>
+  }
+
+  @if (!loading() && !error()) {
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nome</th>
+          <th>Email</th>
+          <th>Status</th>
+          <th>Criado em</th>
+          @if (authService.isAdmin()) {
+            <th>Ações</th>
+          }
+        </tr>
+      </thead>
+      <tbody>
+        @for (user of users(); track user.id) {
+          <tr>
+            <td>{{ user.id }}</td>
+            <td>{{ user.name }}</td>
+            <td>{{ user.email }}</td>
+            <td>
+              <span [class]="user.active ? 'status-active' : 'status-inactive'">
+                {{ user.active ? 'Ativo' : 'Inativo' }}
+              </span>
+            </td>
+            <td>{{ formatDate(user.createdAt) }}</td>
+            @if (authService.isAdmin()) {
+              <td>
+                <button (click)="deleteUser(user.id)" class="btn-danger">
+                  Excluir
+                </button>
+              </td>
+            }
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</div>

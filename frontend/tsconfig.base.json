@@ -1,0 +1,29 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "rootDir": ".",
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "es2015",
+    "module": "esnext",
+    "lib": ["es2020", "dom"],
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@ecommerce/shared-auth": ["shared-auth/src/index.ts"],
+      "@ecommerce/shared-ui": ["shared-ui/src/index.ts"],
+      "@ecommerce/shared-models": ["shared-models/src/index.ts"],
+      "@ecommerce/users-data-access": ["users-data-access/src/index.ts"],
+      "@ecommerce/orders-data-access": ["orders-data-access/src/index.ts"],
+      "@ecommerce/notifications-data-access": [
+        "notifications-data-access/src/index.ts"
+      ],
+    }
+  },
+  "exclude": ["node_modules", "tmp"]
+}
