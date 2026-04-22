@@ -102,4 +102,5 @@ Acessa `http://localhost:8080/q/swagger-ui` para explorar os endpoints via Gatew
 - [x] Fase 9B - Frontend (Native Federation - Arquitetura MFE)
 - [x] Fase 9C - Frontend (Keycloak + OIDC no Shell)
 - [x] Fase 9D - Frontend (CRUD de usuários com autorização por perfil)
+- [x] Fase 9E - Frontend (CRUD de pedidos)
 - [ ] Fase 10 - Testes (Karma/ Jest + Cypress)
