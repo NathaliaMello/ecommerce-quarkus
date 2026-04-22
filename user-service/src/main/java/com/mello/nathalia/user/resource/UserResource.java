@@ -5,7 +5,10 @@ import com.mello.nathalia.user.domain.service.UserService;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.SecurityContext;
+import org.eclipse.microprofile.jwt.JsonWebToken;
 
 import java.util.List;
 
@@ -13,6 +16,9 @@ import java.util.List;
 @Produces("application/json")
 @Consumes("application/json")
 public class UserResource {
+
+    @Inject
+    JsonWebToken jwt;
 
     private final UserService userService;
 
@@ -51,6 +57,15 @@ public class UserResource {
         return deleted
                 ? Response.noContent().build()
                 : Response.status(Response.Status.NOT_FOUND).build();
+    }
+
+    @GET
+    @Path("/me")
+    @RolesAllowed({"admin", "user"})
+    public Response getMe() {
+        String email = jwt.getClaim("email");
+        User user = userService.findByEmail(email);
+        return Response.ok(user).build();
     }
 
 }

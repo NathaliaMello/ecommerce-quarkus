@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UsersService } from '../../services/users.service';
 import { CreateUserRequest } from '../../models/user.model';
+import { User } from '@ecommerce/users-data-access';
 
 @Component({
   selector: 'app-user-form',

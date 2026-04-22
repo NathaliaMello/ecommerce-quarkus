@@ -17,9 +17,9 @@ export const appRoutes: Route[] = [
     {
         path: 'orders',
         canActivate: [authGuard],
-        loadComponent: () => 
-            loadRemoteModule('orders-mfe', './Component').then(
-                (m) => m.App
+        loadChildren: () => 
+            loadRemoteModule('orders-mfe', './Routes').then(
+                (m) => m.appRoutes
             ), 
     },
     {

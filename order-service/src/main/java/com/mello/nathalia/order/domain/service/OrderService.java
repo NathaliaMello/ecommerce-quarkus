@@ -111,4 +111,12 @@ public class OrderService {
 
         return new OrderSummaryResponse(userId, orders.size(), firstOrderDate);
     }
+
+    public List<Order> getByUserId(Long userId) {
+        return orderRepository.findByUserId(userId);
+    }
+
+    public List<Order> getAll() {
+        return orderRepository.listAll();
+    }
 }
