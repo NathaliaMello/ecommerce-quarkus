@@ -42,4 +42,11 @@ public class UserGatewayResource {
     public Response delete(@PathParam("id") Long id) {
         return userServiceClient.delete(id);
     }
+
+    @GET
+    @Path("/me")
+    @RolesAllowed({"admin", "user"})
+    public Response getMe() {
+        return userServiceClient.getMe();
+    }
 }

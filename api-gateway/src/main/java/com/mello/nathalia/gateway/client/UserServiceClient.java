@@ -27,5 +27,9 @@ public interface UserServiceClient {
     @Path("/{id}")
     Response delete(@PathParam("id") Long id);
 
+    @GET
+    @Path("/me")
+    Response getMe();
+
 
 }

@@ -1,7 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { NxWelcome } from './nx-welcome';
-import { AuthService } from 'shared-auth/src/lib/shared-auth/shared-auth';
+import { AuthService } from '@ecommerce/shared-auth';
 
 @Component({
   imports: [RouterModule],
